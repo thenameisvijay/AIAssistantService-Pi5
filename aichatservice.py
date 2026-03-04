@@ -18,14 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# This ensures your REST client sends the right JSON structure
 class PromptRequest(BaseModel):
     prompt: str
-
-# Helper: Check API Key
-async def verify_api_key(x_api_key: str = Header(None)):
-    if x_api_key != API_KEY_SECRET:
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    return x_api_key
 
 # --- ENDPOINTS ---
 
@@ -41,9 +36,6 @@ async def health():
         "cpu_usage_percent": psutil.cpu_percent()
     }
 
-# This ensures your REST client sends the right JSON structure
-class PromptRequest(BaseModel):
-    prompt: str
 
 @app.post("/generate")
 async def generate(data: PromptRequest):
